@@ -30,12 +30,11 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: echo "$HEROKU_API_KEY" | heroku auth:token
 
-      - name: Deploy to Heroku using API
+      - name: Deploy to Heroku using Heroku CLI
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
         run: |
-          heroku git:remote -a ${{ secrets.HEROKU_APP_NAME }}
+          heroku git:remote -a $HEROKU_APP_NAME
           git remote -v
-          heroku auth:token
           git push heroku HEAD:master
