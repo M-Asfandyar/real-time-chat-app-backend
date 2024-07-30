@@ -23,13 +23,19 @@ jobs:
 
 
       - name: Install Heroku CLI
-        run: |
-          curl https://cli-assets.heroku.com/install.sh | sh
+        run: curl https://cli-assets.heroku.com/install.sh | sh
 
-      - name: Deploy to Heroku
+      - name: Authenticate with Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: echo "$HEROKU_API_KEY" | heroku auth:token
+
+      - name: Deploy to Heroku using API
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
         run: |
-          echo "$HEROKU_API_KEY" | heroku auth:token
-          heroku git:remote -a real-time-chat-app-backend
-          git push heroku main
+          heroku git:remote -a ${{ secrets.HEROKU_APP_NAME }}
+          git remote -v
+          heroku auth:token
+          git push heroku HEAD:master
