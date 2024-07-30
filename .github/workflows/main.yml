@@ -21,7 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-     
+      - name: Run tests
+        run: npm test
 
       - name: Install Heroku CLI
         run: curl https://cli-assets.heroku.com/install.sh | sh
@@ -29,7 +30,7 @@ jobs:
       - name: Authenticate with Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku auth:token $HEROKU_API_KEY
+        run: echo "$HEROKU_API_KEY" | heroku auth:token
 
       - name: Deploy to Heroku
         env:
@@ -37,11 +38,4 @@ jobs:
           HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
         run: |
           heroku git:remote -a $HEROKU_APP_NAME
-          git remote -v
-          echo "machine api.heroku.com
-  login $HEROKU_API_KEY
-  password $HEROKU_API_KEY" > ~/.netrc
-          echo "machine git.heroku.com
-  login $HEROKU_API_KEY
-  password $HEROKU_API_KEY" >> ~/.netrc
           git push heroku HEAD:master
